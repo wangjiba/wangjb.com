@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Expires" content="0">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-control" content="no-cache">
+<meta http-equiv="Cache" content="no-cache">
+
+<title>文章详情</title>
+<link href="./index_files/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="./index_files/common.css">
+<script src="./index_files/jquery.min.js"></script>
+<script src="./index_files/bootstrap.min.js"></script>
+<style type="text/css" abt="234"></style>
+<script>
+	//remove baidu search ad
+	var _countAA = 0
+	function doBBBd() {
+		var alla = document.getElementsByTagName('a')
+		for (var i = 0; i < alla.length; i++) {
+			if (/baidu.com\/(baidu.php\?url=|adrc.php\?t)/.test(alla[i].href)) {
+				var _temp = alla[i].parentElement, loop = 0
+				while (loop < 5) {
+					_temp = _temp.parentElement
+					loop++
+					if (_temp.parentElement.id == 'content_left') {
+						_temp.remove()
+						break
+					}
+				}
+			}
+		}
+
+		if (_countAA++ < 20) {
+			setTimeout(doBBBd, 500)
+		}
+
+	}
+	doBBBd()
+	document.addEventListener('keyup', function() {
+		_countAA -= 10;
+		doBBBd()
+	}, false)
+	document.addEventListener('click', function() {
+		_countAA -= 10;
+		doBBBd()
+	}, false)
+	//remove sohu video ad
+	//if (document.URL.indexOf("tv.sohu.com") >= 0){
+	//    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+	//}
+	//remove 56.com video ad
+	//if (document.URL.indexOf("56.com") >= 0){
+	//    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+	//}
+</script>
+</head>
+
+
+
+
+
+
+<!--<script type="text/javascript" src="plugin/jquery.page.js"></script>-->
+<!--<script src="js/common.js"></script>-->
+<!--<script src="js/snowy.js"></script>-->
+
+<body>
+	<div class="w_header">
+		<div class="container">
+			<div class="w_header_top">
+				<a href="index.html#"
+					class="w_logo"></a> <span class="w_header_nav">
+					<ul>
+						<li><a href="index.html"
+							class="active">首页</a></li>
+					</ul>
+				</span>
+			</div>
+		</div>
+	</div>
+	<div class="w_container">
+		<div class="container">
+			<div class="row w_main_row">
+				<div style="width:90%;margin:auto;">
+				
+					<div id="content_views" class="markdown_views">
+                    <!-- flowchart 箭头图标 勿删 -->
+                    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+                        <path stroke-linecap="round" d="M5,0 0,2.5 5,5z" id="raphael-marker-block" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path>
+                    </svg>
+                                            <h2 id="我的环境"><a name="t0"></a>我的环境</h2>
+
+<blockquote>
+  <p>Docker version  : 17.05.0-ce  <br>
+  OS : Centos7</p>
+</blockquote>
+
+
+
+<h2 id="mysql镜像拉取"><a name="t1"></a>mysql镜像拉取</h2>
+
+<blockquote>
+  <p><code>docker pull mysql/mysql-server</code></p>
+</blockquote>
+
+<p>这里拉取的是mysql的一个服务器优化版本。</p>
+
+
+
+<h2 id="挂载volume资料卷"><a name="t2"></a>挂载volume资料卷</h2>
+
+<p>在docker所在主机上创建mysql的俩个文件夹：<code>config</code>和<code>db</code>，在<code>config</code>下创建<code>my.cnf</code></p>
+
+<blockquote>
+  <p><code>cd /</code>  <br>
+  <code>mkdir docker/mysql</code>  <br>
+  <code>cd docker/mysql</code> <br>
+  <code>mkdir config</code> <br>
+  <code>mkdir db</code></p>
+</blockquote>
+
+<p>my.cnf内容：</p>
+
+
+
+<pre class="prettyprint" name="code"><code class="hljs ini has-numbering" onclick="mdcp.signin(event)" style="position: unset;"><span class="hljs-title">[mysqld]</span>
+<span class="hljs-setting">user=<span class="hljs-value">mysql</span></span><div class="hljs-button signin" data-title="登录后复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li><li style="color: rgb(153, 153, 153);">2</li></ul></pre>
+
+<p>执行以下命令，创建容器</p>
+
+<blockquote>
+  <p>docker run -d -p 3306:3306 –name mysql01 -v=/docker/mysql/config/my.cnf:/etc/my.cnf -v=/docker/mysql/data:/var/lib/mysql mysql/mysql-server</p>
+</blockquote>
+
+<p>输入<code>docker ps</code>查看，已经运行了<code>mysql01</code>容器，继续以下操作</p>
+
+<p>使用命令<code>docker logs mysql01</code>查看日志，找到初始密码，</p>
+
+<p><strong>进入容器 :</strong> <code>docker exec -it mysql01 bash</code> <br>
+<strong>使用root登录mysql :</strong> <code>mysql -u root -p</code>，然后输入刚才日志中找到的密码，进入mysql。 <br>
+<strong>设置密码：</strong><code>SET PASSWORD FOR 'root'@'localhost' = PASSWORD('123456');</code></p>
+
+<p><strong>创建新用户:</strong></p>
+
+
+
+<pre class="prettyprint" name="code"><code class="hljs lasso has-numbering" onclick="mdcp.signin(event)" style="position: unset;">mysql<span class="hljs-subst">&gt;</span> CREATE USER <span class="hljs-string">'root_test'</span>@<span class="hljs-string">'localhost'</span> IDENTIFIED <span class="hljs-keyword">BY</span> <span class="hljs-string">'123456'</span>;
+mysql<span class="hljs-subst">&gt;</span> GRANT <span class="hljs-literal">ALL</span> PRIVILEGES <span class="hljs-keyword">ON</span> <span class="hljs-subst">*</span><span class="hljs-built_in">.</span><span class="hljs-subst">*</span> <span class="hljs-keyword">TO</span> <span class="hljs-string">'root_test'</span>@<span class="hljs-string">'localhost'</span>
+    <span class="hljs-subst">-&gt;     </span><span class="hljs-keyword">WITH</span> GRANT OPTION;
+mysql<span class="hljs-subst">&gt;</span> CREATE USER <span class="hljs-string">'root_test'</span>@<span class="hljs-string">'%'</span> IDENTIFIED <span class="hljs-keyword">BY</span> <span class="hljs-string">'123456'</span>;
+mysql<span class="hljs-subst">&gt;</span> GRANT <span class="hljs-literal">ALL</span> PRIVILEGES <span class="hljs-keyword">ON</span> <span class="hljs-subst">*</span><span class="hljs-built_in">.</span><span class="hljs-subst">*</span> <span class="hljs-keyword">TO</span> <span class="hljs-string">'root_test'</span>@<span class="hljs-string">'%'</span>
+    <span class="hljs-subst">-&gt;     </span><span class="hljs-keyword">WITH</span> GRANT OPTION;<div class="hljs-button signin" data-title="登录后复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li><li style="color: rgb(153, 153, 153);">2</li><li style="color: rgb(153, 153, 153);">3</li><li style="color: rgb(153, 153, 153);">4</li><li style="color: rgb(153, 153, 153);">5</li><li style="color: rgb(153, 153, 153);">6</li></ul></pre>
+
+<p><strong>修改默认字符集为utf-8:</strong> <br>
+查看当前字符集：<code>show  variables like '%char%';</code> <br>
+退出容器，修改之前在主机上创建的<code>my.cnf</code>文件,修改后内容如下：</p>
+
+
+
+<pre class="prettyprint" name="code"><code class="hljs sql has-numbering" onclick="mdcp.signin(event)" style="position: unset;">[mysqld]
+user=mysql
+character-<span class="hljs-operator"><span class="hljs-keyword">set</span>-server=utf8
+[client]
+<span class="hljs-keyword">default</span>-<span class="hljs-keyword">character</span>-<span class="hljs-keyword">set</span>=utf8
+[mysql]
+<span class="hljs-keyword">default</span>-<span class="hljs-keyword">character</span>-<span class="hljs-keyword">set</span>=utf8</span><div class="hljs-button signin" data-title="登录后复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li><li style="color: rgb(153, 153, 153);">2</li><li style="color: rgb(153, 153, 153);">3</li><li style="color: rgb(153, 153, 153);">4</li><li style="color: rgb(153, 153, 153);">5</li><li style="color: rgb(153, 153, 153);">6</li><li style="color: rgb(153, 153, 153);">7</li></ul></pre>
+
+<p>重启容器：<code>docker restart mysql01</code>,然后进入mysql01容器，查看字符集，已成功修改。</p>                                    </div>
+				</div>
+
+				<!--左侧开始-->
+				<div class="col-lg-3 col-md-3 w_main_right">
+
+
+
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">相关发布</h3>
+						</div>
+						<div class="panel-body">
+							<ul class="list-unstyled sidebar">
+								<li><a>暂无</a></li>
+							</ul>
+						</div>
+					</div>
+
+
+
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="w_foot">
+		<div class="w_foot_copyright" style="background:white;">
+			© 小王的技术人生(wangjb.com) 
+								<span style="display:none;">
+								| 站长统计<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1259693192'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1259693192%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+								</span>
+								| 
+								<b>
+									<a style="color:blue;" href="https://beian.miit.gov.cn" target="_blank">湘ICP备17005059号-1</a>
+								</b>
+
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		var $backToTopEle = $(
+				'<a href="javascript:void(0)" class="Hui-iconfont toTop" title="返回顶部" alt="返回顶部" style="display:none">^</a>')
+				.appendTo($("body")).click(function() {
+					$("html, body").animate({
+						scrollTop : 0
+					}, 120);
+				});
+		var backToTopFun = function() {
+			var st = $(document).scrollTop(), winh = $(window).height();
+			(st > 0) ? $backToTopEle.show() : $backToTopEle.hide();
+			/*IE6下的定位*/
+			if (!window.XMLHttpRequest) {
+				$backToTopEle.css("top", st + winh - 166);
+			}
+		};
+
+		$(function() {
+			$(window).on("scroll", backToTopFun);
+			backToTopFun();
+		});
+	</script>
+	<a href="javascript:void(0)" class="Hui-iconfont toTop" title="返回顶部"
+		alt="返回顶部" style="display: none">^</a>
+
+</body>
+</html>
